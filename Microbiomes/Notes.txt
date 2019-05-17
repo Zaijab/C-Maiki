@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 20 18:46:16 2019
+
+@author: sanashahid
+"""
+
+track metadata for outlier points 
+split data into based on sample type (~5 types) and plot color coded data
+maybe split data up into other categories too? 
+deal with overlaps: transparent colors, or different size dots, 
+do abundance vs present scatters again
+
+do with filtered and unfiltered and compare
+do simplist PCA on rows as vectors only find 2 largest eig set and project everything on that (and plot)
+
+
+notes 
+low presence could correspond to difference in soil vs insect gut 
+
+
+find presence of total data under 10
+
+compare outlier species, what is their dissimilarity measure? 
+compare to genetic/taxanomic data, how close are the outliers with each other(species wise)? 
+compare outlier samples?  focus on smaples with presence larger than 1
+look at species with 40 - 80 presence and compare those 
+look at abundance for those species (look at the 25 species with presence 40)
+
+extract slope and intercept from linear regression 
+
+
+metadata sampleID is not unique. each ID has two samples a fungi and a bacteria
+matching table means appending more rows NOT COLUMNS the metadata matches sites 
+not species and match using sample barcode
+
+use NCBI BLAST to measure genetic similarity or use minimap 2 and then use emboss stretcher to compare
+aligntment algorithm: needleman wunsch 
+in abundance data keep numerical identifier for smaple name (remove .fastq)
+
+    integrate with qualitative info -- color the data 
+    redo hist/scat for each fungi/animal/plant/nonhost and add these as rows at the end of data 
