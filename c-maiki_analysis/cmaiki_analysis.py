@@ -269,3 +269,6 @@ if __name__ == '__main__':
     unifrac_dists, unweighted_unifrac_dists, l2_dists = get_dists(otu_data, otu_names, taxonomic_tree)
     plot_heatmaps(unifrac_dists, unweighted_unifrac_dists, l2_dists)
     node_by_dist = get_taxonomic_levels(taxonomic_tree)
+
+    np.save("/home/zjabbar/code/C-Maiki/heatdistributedmanifold/unifracdist.npy",unifrac_dists)
+    
