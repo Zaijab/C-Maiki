@@ -6,7 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import skbio
 
-def import_otu_data(filename='raw_data/16S/abundance_table_97.shared', load_data=False):
+def import_otu_data(filename='../data/genetic/16S/abundance_table_97.shared', load_data=False):
     """ Import abundance data from file. sample_data is a list of strings of
     each sample name ['100001', '100002', etc.]. otu_data is a matrix of
     abundances, with otu_data[i] corresponding to sample i and consisting of a
@@ -29,7 +29,7 @@ def import_otu_data(filename='raw_data/16S/abundance_table_97.shared', load_data
 
     return sample_data, raw_otu_data
 
-def import_metadata(filename='raw_data/CMAIKI_Miseq1MappingFile_20181105.csv', load_data=False):
+def import_metadata(filename='../data/genetic/CMAIKI_Miseq1MappingFile_20181105.csv', load_data=False):
     """ Import metadata from file. Calling metadata['Otu00001'] will return
     'Plant' or 'Fungus', etc. """
 
@@ -50,7 +50,7 @@ def import_metadata(filename='raw_data/CMAIKI_Miseq1MappingFile_20181105.csv', l
 
     return metadata
 
-def import_taxonomy(filename='raw_data/16S/annotations_97.taxonomy', load_data=False):
+def import_taxonomy(filename='../data/genetic/16S/annotations_97.taxonomy', load_data=False):
     """ Import OTU taxonomy from file. otu_names is a list of strings of each
     OTU ['Otu00001', 'Otu00002', 'Otu00003', etc.]. taxonomies is a dictionary
     with otu_names as the keys and values a list of taxonomic hierarchies, e.g.
@@ -258,10 +258,10 @@ def plot_heatmaps(unifrac_dists, unweighted_unifrac_dists, l2_dists):
         plt.savefig(f'figs/{name}_distance_matrix.pdf', bbox_inches='tight')
 
 if __name__ == '__main__':
-    sample_names, otu_data = import_otu_data(load_data=True)
-    metadata = import_metadata(load_data=True)
-    metadata = get_host_distribution(sample_names, otu_data, metadata, verbose=False)
-    otu_names, taxonomies, taxonomic_tree = import_taxonomy(load_data=True)
+    sample_names, otu_data = import_otu_data(load_data=False)
+    metadata = import_metadata(load_data=False)
+    metadata = get_host_distribution(sample_names, otu_data, metadata, verbose=True)
+    otu_names, taxonomies, taxonomic_tree = import_taxonomy(load_data=False)
 
     plot_species_abundance_distributions(sample_names, otu_data, metadata)
     plot_shannon_diversities(sample_names, otu_data, metadata)
@@ -269,6 +269,4 @@ if __name__ == '__main__':
     unifrac_dists, unweighted_unifrac_dists, l2_dists = get_dists(otu_data, otu_names, taxonomic_tree)
     plot_heatmaps(unifrac_dists, unweighted_unifrac_dists, l2_dists)
     node_by_dist = get_taxonomic_levels(taxonomic_tree)
-
-    np.save("/home/zjabbar/code/C-Maiki/heatdistributedmanifold/unifracdist.npy",unifrac_dists)
     
