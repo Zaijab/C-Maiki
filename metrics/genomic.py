@@ -139,7 +139,7 @@ def plot_species_abundance_distributions(sample_names, otu_data, metadata):
     plt.axis([None, None, None, 1])
     plt.xlabel('\% species')
     plt.ylabel('relative abundance')
-    plt.savefig('figs/species_abundance_curve_5.pdf', bbox_inches='tight')
+    plt.savefig('../presentation/figs/species_abundance_curve_5.pdf', bbox_inches='tight')
 
 def plot_shannon_diversities(sample_names, otu_data, metadata):
     plt.figure()
@@ -170,7 +170,7 @@ def plot_shannon_diversities(sample_names, otu_data, metadata):
     ax.set_xlim([0, 1])
     plt.xlabel('shannon diversity')
     plt.ylabel('\# occurrences')
-    plt.savefig('figs/shannon_div_1.pdf', bbox_inches='tight')
+    plt.savefig('../presentation/figs/shannon_div_1.pdf', bbox_inches='tight')
 
 def get_taxonomic_levels(taxonomic_tree):
     name_by_dist = {}
@@ -182,7 +182,7 @@ def get_taxonomic_levels(taxonomic_tree):
             name_by_dist[node.distance(taxonomic_tree.root())].append(node.name)
 
 def get_unifrac_distances(otu_data, otu_names, taxonomic_tree, read_data=False):
-    filename = 'data/unifrac_distances.pi'
+    filename = '../data/cache/unifrac_distances.pi'
     if read_data:
         with open(filename, 'rb') as f:
             unifrac_dists = pickle.load(f)
@@ -198,7 +198,7 @@ def get_unifrac_distances(otu_data, otu_names, taxonomic_tree, read_data=False):
     return unifrac_dists
 
 def get_unweighted_unifrac_distances(otu_data, otu_names, taxonomic_tree, read_data=False):
-    filename = 'data/unweighted_unifrac_distances.pi'
+    filename = '../data/cache/unweighted_unifrac_distances.pi'
     if read_data:
         with open(filename, 'rb') as f:
             unifrac_dists = pickle.load(f)
@@ -213,7 +213,7 @@ def get_unweighted_unifrac_distances(otu_data, otu_names, taxonomic_tree, read_d
     return unifrac_dists
 
 def get_l2_distances(otu_data, otu_names, taxonomic_tree, read_data=False):
-    filename = 'data/l2_distances.pi'
+    filename = '../data/cache/l2_distances.pi'
     if read_data:
         with open(filename, 'rb') as f:
             l2_dists = pickle.load(f)
@@ -255,7 +255,7 @@ def plot_heatmaps(unifrac_dists, unweighted_unifrac_dists, l2_dists):
         cbar = plt.colorbar()
         cbar.set_label('distance')
         plt.title(f'{name}')
-        plt.savefig(f'figs/{name}_distance_matrix.pdf', bbox_inches='tight')
+        plt.savefig(f'../presentation/figs/{name}_distance_matrix.pdf', bbox_inches='tight')
 
 if __name__ == '__main__':
     sample_names, otu_data = import_otu_data(load_data=False)
