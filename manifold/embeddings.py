@@ -1,4 +1,3 @@
-import pickle
+import numpy as np
 
-dist_matrix = pickle.load(open("./data/cache/unifrac_distances.pi","rb"))
-
+dist_matrix = np.load("./data/cache/unifracdist.npy")
