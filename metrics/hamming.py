@@ -24,7 +24,7 @@ def calc_dist_matrix(otu_dna_pair_list):
     for i in range(len(otu_dna_pair_list)):
         for j in range(len(otu_dna_pair_list)):
             dist_matrix[i][j] = hamming_dist(otu_dna_pair_list[i][1],otu_dna_pair_list[j][1])
-            # print(dist_matrix[i][j])
+            #print(dist_matrix[i][j])
     return dist_matrix
 
 hamming_dist_matrix = calc_dist_matrix(otu_dna_pair[1:])
