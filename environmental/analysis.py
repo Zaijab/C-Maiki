@@ -62,10 +62,15 @@ def plotter(matrix,header=None,title=None,clim=None):
         ax.set_yticklabels(['']+header)
     if title != None:
         ax.set_title(title)
-    ax.xaxis.set_major_locator(ticker.FixedLocator([0,31,61,92,122,153,184,213,244,274,305,335]))
-    ax.yaxis.set_major_locator(ticker.FixedLocator([0,31,61,92,122,153,184,213,244,274,305,335]))
-    ax.set_yticklabels(["August","September","October","November","December","January","February","March","April","May","June","July"])
-    ax.set_xticklabels(["August","September","October","November","December","January","February","March","April","May","June","July"])
+    ax.xaxis.set_major_locator(ticker.FixedLocator([0,1,2,3,4,5,6,7,8]))
+    ax.yaxis.set_major_locator(ticker.FixedLocator([0,1,2,3,4,5,6,7,8]))
+    #ax.xaxis.set_major_locator(ticker.FixedLocator([0,31,61,92,122,153,184,213,244,274,305,335]))
+    #ax.yaxis.set_major_locator(ticker.FixedLocator([0,31,61,92,122,153,184,213,244,274,305,335]))
+    ax.set_yticklabels(["10m","30m","40m","60m","70m","80m","90m","120m","130m"])
+    ax.set_xticklabels(["10m","30m","40m","60m","70m","80m","90m","120m","130m"])
+    #ax.set_xticklabels(["August","September","October","November","December","January","February","March","April","May","June","July"])
+    #ax.set_yticklabels(["August","September","October","November","December","January","February","March","April","May","June","July"])
+
     plt.xticks(rotation='vertical')
     plt.show()
 
@@ -74,6 +79,6 @@ def distance_matrix(vectors):
     distmatrix = np.zeros((len(vectors),len(vectors)))
     for i in range(len(vectors)):
         for j in range(len(vectors)):
-            distmatrix[i][j] = c1_spline_derivative(np.asarray(vectors[i])-np.asarray(vectors[j]))
+            distmatrix[i][j] = c1_norm((vectors[i]),(vectors[j]))
     return distmatrix
 

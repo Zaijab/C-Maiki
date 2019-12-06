@@ -1,0 +1,17 @@
+(when (not (fboundp 'png-from-file)) (defun png-from-file (f) f))
+(ensure-directories-exist "images/")
+(quicklisp-client:quickload '(:eazy-gnuplot :clml.statistics :clml.utility))
+(use-package :eazy-gnuplot)
+
+(defun scatter-plot (output)
+  (with-plots (*standard-output* :debug nil)
+    (gp-setup :terminal '(png) :output output)
+    (plot
+     (lambda ()
+       (loop for p in (map 'list (lambda (x y) (list x y))
+                           '(2361 2545 1009 1065 457 1010 185 706 1193 1498 1625 2201 3105 3393)
+                           '(129 289 409 617 1161 1650 1825 2322 1377 1722 1321 1873 2025 2289))
+             do (format t "~&~{~a~^ ~}" p)))
+     :with '(:points :pt 7)))
+  output)
+(png-from-file (scatter-plot "images/scatter-plot.png"))
