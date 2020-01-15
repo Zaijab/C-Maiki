@@ -1,0 +1,20 @@
+* C-Maiki
+The C-Maiki group specializes in topological data analysis.
+
+Code for analysis is given, presentation & data is hidden.
+
+** Environmental Data Analysis
+** Microbiome Data Analysis
+** Rapid Ohia Death Data Analysis 
+* Folder Structure
+** Analysis
+*** Microbiome
+**** Abundance Table
+**** Presence Histogram
+**** Abundance Histogram
+**** Abundance vs Presence Scatter Plot
+Plotted all together, terrestrial, riverine, by habitat, by host, etc
+*** Trees
+*** Environmental
+** Data
+** Presentation
