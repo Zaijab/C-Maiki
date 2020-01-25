@@ -139,7 +139,7 @@ def plot_species_abundance_distributions(sample_names, otu_data, metadata):
     plt.axis([None, None, None, 1])
     plt.xlabel('\% species')
     plt.ylabel('relative abundance')
-    plt.savefig('../presentation/figs/species_abundance_curve_5.pdf', bbox_inches='tight')
+    plt.savefig('../presentation/microbiome/figures/species_abundance_curve_5.pdf', bbox_inches='tight')
 
 def plot_shannon_diversities(sample_names, otu_data, metadata):
     plt.figure()
@@ -170,7 +170,7 @@ def plot_shannon_diversities(sample_names, otu_data, metadata):
     ax.set_xlim([0, 1])
     plt.xlabel('shannon diversity')
     plt.ylabel('\# occurrences')
-    plt.savefig('../presentation/figs/shannon_div_1.pdf', bbox_inches='tight')
+    plt.savefig('../presentation/microbiome/figures/shannon_div_1.pdf', bbox_inches='tight')
 
 def get_taxonomic_levels(taxonomic_tree):
     name_by_dist = {}
@@ -255,7 +255,7 @@ def plot_heatmaps(unifrac_dists, unweighted_unifrac_dists, l2_dists):
         cbar = plt.colorbar()
         cbar.set_label('distance')
         plt.title(f'{name}')
-        plt.savefig(f'../presentation/figs/{name}_distance_matrix.pdf', bbox_inches='tight')
+        plt.savefig(f'../presentation/microbiome/figures/{name}_distance_matrix.pdf', bbox_inches='tight')
 
 if __name__ == '__main__':
     sample_names, otu_data = import_otu_data(load_data=False)
