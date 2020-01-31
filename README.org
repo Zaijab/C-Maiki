@@ -7,6 +7,8 @@ Code for analysis is given, presentation & data is hidden.
 ** Microbiome Data Analysis
 ** Rapid Ohia Death Data Analysis 
 * Folder Structure
+All projects get their own folder
+Each project uses a common data folder
 ** Analysis
 *** Microbiome
 **** Def: Species
@@ -18,7 +20,7 @@ A matrix of Sample vs Species
 If [A[i,j] = n], then [There are n species i at sample j]
 **** Histogram: Abundance vs Sample
 Shows 
-** Data
+** Project
 * Code Structure 
 ** Microbiome
 The Microbiome folder will contain a Microbiome module
