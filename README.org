@@ -11,22 +11,30 @@ All projects get their own folder
 Each project uses a common data folder
 ** Analysis
 *** Microbiome
-**** Def: Species
-An organism with a certain DNA sequence
-**** Def: Sample
-A specific location
-**** Def: Abundance Table
-A matrix of Sample vs Species
-If [A[i,j] = n], then [There are n species i at sample j]
-**** Histogram: Abundance vs Sample
-Shows 
+**** Definitions
+***** Species
+      An organism with a certain DNA sequence
+***** Sample
+      A specific location
+***** Abundance Table
+      A matrix of Sample vs Species
+      If [A[i,j] = n], then [There are n species i at sample j] 
+**** Plots
+**** Variables
 ** Project
 * Code Structure 
 ** Microbiome
-The Microbiome folder will contain a Microbiome module
-In the Microbiome module, you can create a Microbiome analysis class with a constructor that takes in a path to the data.
-The object will have methods to plot certain figures.
-
-The Data we are given is:
-Abundance Table
-Metadata
+*** Classes
+**** Microbiome
+A Class to represent a microbiome.
+***** Constructor
+Takes in a path to the data and path to save figures.
+***** Analysis Functions
+****** Unifrac Distance
+****** Bray Curtis Dissimilarity
+***** Plotting Methods
+****** Shannon Diversity
+****** Beta Diversity
+****** Alpha Diversity
+****** Abundance Table
+****** Distance Matrix
