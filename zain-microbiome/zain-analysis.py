@@ -114,7 +114,7 @@ class Microbiome(object):
     def plot_species_abundance_distributions(self):
         plt.figure()
         count = 0
-        for i, sample in enumerate(otu_data):
+        for i, sample in enumerate(self.otu_data):
             ordered_samp = np.copy(sample)
             ordered_samp.sort()
             ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
@@ -133,7 +133,7 @@ class Microbiome(object):
         plt.step(np.linspace(0, 100, len(normed_samp)),
                  normed_samp, color='k', lw=5)
 
-        print(f'using {count} out of {len(otu_data)} samples')
+        print(f'using {count} out of {len(self.otu_data)} samples')
         ax = plt.gca()
         ax.set_yscale('log')
         plt.axis([None, None, None, 1])
@@ -147,7 +147,7 @@ class Microbiome(object):
         plt.figure()
         count = 0
         shannons = []
-        for i, sample in enumerate(otu_data):
+        for i, sample in enumerate(self.otu_data):
             nonzero_samp = [val for val in sample if val > 0]
             normed_samp = nonzero_samp/np.sum(nonzero_samp)
             if len(normed_samp) > 100:
@@ -169,7 +169,7 @@ class Microbiome(object):
 
         plt.hist(fake_shannons, bins=30, alpha=.5)
 
-        print(f'using {count} out of {len(otu_data)} samples')
+        print(f'using {count} out of {len(self.otu_data)} samples')
         ax = plt.gca()
         ax.set_xlim([0, 1])
         plt.xlabel('shannon diversity')
@@ -203,27 +203,25 @@ class Microbiome(object):
         return unifrac_dists
 
     def get_l2_distances(self):
-
         l2_dists = []
         for i, samp_1 in enumerate(self.otu_data):
             print(i)
             for j, samp_2 in enumerate(self.otu_data):
                 l2_dists.append(np.log(np.linalg.norm(samp_1-samp_2)))
-
         l2_dists = np.array(l2_dists)
-        l2_dists = np.reshape(l2_dists, (len(self.otu_data), len(otu_data)))
+        l2_dists = np.reshape(
+            l2_dists, (len(self.otu_data), len(self.otu_data)))
 
         return l2_dists
 
     def get_dists(self):
-
-    sample_names, otu_data = test_analysis.import_otu_data()
-    metadata = test_analysis.import_metadata()
-    otu_names, taxonomies, taxonomic_tree = test_analysis.import_taxonomy()
-    unifrac_dists = self.get_unifrac_distances()
-    unweighted_unifrac_dists = self.get_unweighted_unifrac_distances()
-    l2_dists = self.get_l2_distances()
-    return unifrac_dists.redundant_form(), unweighted_unifrac_dists.redundant_form(), l2_dists
+        unifrac_dists = self.get_unifrac_distances()
+        unweighted_unifrac_dists = self.get_unweighted_unifrac_distances()
+        l2_dists = self.get_l2_distances()
+        self.unifrac_dists = unifrac_dists.redundant_form()
+        self.unweighted_unifrac_dists.redundant_form()
+        self.l2_dists = l2_dists
+        return unifrac_dists.redundant_form(), unweighted_unifrac_dists.redundant_form(), l2_dists
 
     # Plotting Functions
 
