@@ -1,3 +1,7 @@
+"""
+This module is created to do data analysis on microbiome data.
+"""
+
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import dendrogram, linkage
 import matplotlib.pyplot as plt
@@ -18,6 +22,9 @@ class Microbiome(object):
     # Initializing Functions
 
     def __init__(self, data_path, figure_path, cache_path, load_data):
+        """
+        Construct a new microme
+        """
         self.data_path = data_path
         self.figure_path = figure_path
         self.cache_path = cache_path
@@ -51,8 +58,8 @@ class Microbiome(object):
         return sample_data, raw_otu_data
 
     def import_metadata(self):
-        """ 
-        Import metadata from file. 
+        """
+        Import metadata from file.
         Calling metadata['Otu00001'] will return 'Plant' or 'Fungus', etc.
         """
 
@@ -82,12 +89,12 @@ class Microbiome(object):
         return metadata
 
     def import_taxonomy(self):
-        """ 
-        Import OTU taxonomy from file. 
+        """
+        Import OTU taxonomy from file.
 
         Output:
-        otu_names = ['Otu00001', 'Otu00002', 'Otu00003', etc.]. 
-        taxonomies['Otu00001'] = ['Bacteria', 'Bacterioides', etc.]. 
+        otu_names = ['Otu00001', 'Otu00002', 'Otu00003', etc.].
+        taxonomies['Otu00001'] = ['Bacteria', 'Bacterioides', etc.].
         taxonomic_tree is a Tree class from the skbio module that contains all taxonomic information
         """
 
@@ -111,89 +118,11 @@ class Microbiome(object):
 
         return otu_names, taxonomies, taxonomic_tree
 
-    def plot_species_abundance_distributions(self):
-        plt.figure()
-        count = 0
-        for i, sample in enumerate(self.otu_data):
-            ordered_samp = np.copy(sample)
-            ordered_samp.sort()
-            ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
-            normed_samp = ordered_samp/np.sum(ordered_samp)
-            if len(normed_samp) > 100:
-                count += 1
-                plt.step(np.linspace(0, 100, len(normed_samp)),
-                         normed_samp, lw=.5)
-
-        lognormal = np.random.lognormal(size=500)
-        ordered_samp = np.copy(lognormal)
-        ordered_samp.sort()
-        ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
-        normed_samp = ordered_samp/np.sum(ordered_samp)
-
-        plt.step(np.linspace(0, 100, len(normed_samp)),
-                 normed_samp, color='k', lw=5)
-
-        print(f'using {count} out of {len(self.otu_data)} samples')
-        ax = plt.gca()
-        ax.set_yscale('log')
-        plt.axis([None, None, None, 1])
-        plt.xlabel('\% species')
-        plt.ylabel('relative abundance')
-        plt.savefig(
-            f'{self.data_path}/species_abundance_curve_5.pdf', bbox_inches='tight')
-
-    def plot_shannon_diversities(self):
-
-        plt.figure()
-        count = 0
-        shannons = []
-        for i, sample in enumerate(self.otu_data):
-            nonzero_samp = [val for val in sample if val > 0]
-            normed_samp = nonzero_samp/np.sum(nonzero_samp)
-            if len(normed_samp) > 100:
-                shannon_div = sum([-val*np.log(val)
-                                   for val in normed_samp])/np.log(len(normed_samp))
-                shannons.append(shannon_div)
-                count += 1
-
-        plt.hist(shannons, bins=30, alpha=.5)
-
-        fake_shannons = []
-        for i in range(400):
-            lognormal = np.random.lognormal(sigma=1.4, size=50)
-            ordered_samp = [val for val in lognormal if val > 0]
-            normed_samp = ordered_samp/np.sum(ordered_samp)
-            shannon_div = sum([-val*np.log(val)
-                               for val in normed_samp])/np.log(len(normed_samp))
-            fake_shannons.append(shannon_div)
-
-        plt.hist(fake_shannons, bins=30, alpha=.5)
-
-        print(f'using {count} out of {len(self.otu_data)} samples')
-        ax = plt.gca()
-        ax.set_xlim([0, 1])
-        plt.xlabel('shannon diversity')
-        plt.ylabel('\# occurrences')
-        plt.savefig(f'{self.figure_path}/shannon_div_1.pdf',
-                    bbox_inches='tight')
-
-    def get_taxonomic_levels(self, taxonomic_tree):
-        name_by_dist = {}
-        for node in taxonomic_tree.traverse():
-            try:
-                name_by_dist[node.distance(
-                    taxonomic_tree.root())].append(node.name)
-            except KeyError:
-                name_by_dist[node.distance(taxonomic_tree.root())] = []
-                name_by_dist[node.distance(
-                    taxonomic_tree.root())].append(node.name)
-
     # Analysis Function
 
     def get_unifrac_distances(self):
         unifrac_dists = skbio.diversity.beta_diversity(
             'weighted_unifrac', self.otu_data, otu_ids=self.otu_names, validate=False, tree=self.taxonomic_tree, normalized=True)
-
         return unifrac_dists
 
     def get_unweighted_unifrac_distances(self):
@@ -219,15 +148,14 @@ class Microbiome(object):
         unweighted_unifrac_dists = self.get_unweighted_unifrac_distances()
         l2_dists = self.get_l2_distances()
         self.unifrac_dists = unifrac_dists.redundant_form()
-        self.unweighted_unifrac_dists.redundant_form()
+        self.unweighted_unifrac_dists = unweighted_unifrac_dists.redundant_form()
         self.l2_dists = l2_dists
         return unifrac_dists.redundant_form(), unweighted_unifrac_dists.redundant_form(), l2_dists
 
     # Plotting Functions
 
     def plot_heatmaps(self):
-        for name, dist in zip(['unifrac', 'unweighted', 'l2'], [self.unifrac_dists,
-                                                                self.unweighted_unifrac_dists, self.l2_dists]):
+        for name, dist in zip(['unifrac', 'unweighted', 'l2'], [self.unifrac_dists, self.unweighted_unifrac_dists, self.l2_dists]):
             plt.figure()
             plt.imshow(dist, cmap='hot')
             plt.xlabel('sample \#')
@@ -238,14 +166,70 @@ class Microbiome(object):
             plt.savefig(
                 f'{self.figure_path}/{name}_distance_matrix.pdf', bbox_inches='tight')
 
+    def plot_shannon_diversities(self):
+        plt.figure()
+        count = 0
+        shannons = []
+        for i, sample in enumerate(self.otu_data):
+            nonzero_samp = [val for val in sample if val > 0]
+            normed_samp = nonzero_samp/np.sum(nonzero_samp)
+            if len(normed_samp) > 100:
+                shannon_div = sum([-val*np.log(val)
+                                   for val in normed_samp])/np.log(len(normed_samp))
+                shannons.append(shannon_div)
+                count += 1
+        plt.hist(shannons, bins=30, alpha=.5)
+        fake_shannons = []
+        for i in range(400):
+            lognormal = np.random.lognormal(sigma=1.4, size=50)
+            ordered_samp = [val for val in lognormal if val > 0]
+            normed_samp = ordered_samp/np.sum(ordered_samp)
+            shannon_div = sum([-val*np.log(val)
+                               for val in normed_samp])/np.log(len(normed_samp))
+            fake_shannons.append(shannon_div)
+        plt.hist(fake_shannons, bins=30, alpha=.5)
+        print(f'using {count} out of {len(self.otu_data)} samples')
+        ax = plt.gca()
+        ax.set_xlim([0, 1])
+        plt.xlabel('shannon diversity')
+        plt.ylabel('\# occurrences')
+        plt.savefig(f'{self.figure_path}/shannon_div_1.pdf',
+                    bbox_inches='tight')
+
+    def plot_species_abundance_distributions(self):
+        plt.figure()
+        count = 0
+        for i, sample in enumerate(self.otu_data):
+            ordered_samp = np.copy(sample)
+            ordered_samp.sort()
+            ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
+            normed_samp = ordered_samp/np.sum(ordered_samp)
+            if len(normed_samp) > 100:
+                count += 1
+                plt.step(np.linspace(0, 100, len(normed_samp)),
+                         normed_samp, lw=.5)
+        lognormal = np.random.lognormal(size=500)
+        ordered_samp = np.copy(lognormal)
+        ordered_samp.sort()
+        ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
+        normed_samp = ordered_samp/np.sum(ordered_samp)
+        plt.step(np.linspace(0, 100, len(normed_samp)),
+                 normed_samp, color='k', lw=5)
+        print(f'using {count} out of {len(self.otu_data)} samples')
+        ax = plt.gca()
+        ax.set_yscale('log')
+        plt.axis([None, None, None, 1])
+        plt.xlabel('\% species')
+        plt.ylabel('relative abundance')
+        plt.savefig(
+            f'{self.data_path}/species_abundance_curve_5.pdf', bbox_inches='tight')
+
 
 def main():
     test_analysis = Microbiome(
         "./data/microbiome", "./presentation/microbiome/figures", ".data/microbiome/cache", False)
-
     test_analysis.plot_species_abundance_distributions()
     test_analysis.plot_shannon_diversities()
-
     test_analysis.get_dists()
     test_analysis.plot_heatmaps()
 

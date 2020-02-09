@@ -28,7 +28,24 @@ Each project uses a common data folder
 **** Microbiome
 A Class to represent a microbiome.
 ***** Constructor
-Takes in a path to the data and path to save figures.
+****** import_otu_data
+****** import_metadata
+****** import_taxonomy
+****** get_taxonomic_levels
+#+BEGIN_SRC Python
+"""
+    def get_taxonomic_levels(self, taxonomic_tree):
+        name_by_dist = {}
+        for node in taxonomic_tree.traverse():
+            try:
+                name_by_dist[node.distance(
+                    taxonomic_tree.root())].append(node.name)
+            except KeyError:
+                name_by_dist[node.distance(taxonomic_tree.root())] = []
+                name_by_dist[node.distance(
+                    taxonomic_tree.root())].append(node.name)
+"""
+#+END_SRC
 ***** Analysis Functions
 ****** Unifrac Distance
 ****** Bray Curtis Dissimilarity
