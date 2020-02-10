@@ -26,7 +26,7 @@ Each project uses a common data folder
 ** Microbiome
 *** Classes
 **** Microbiome
-A Class to represent a microbiome.
+     A Class to represent a microbiome.
 ***** Constructor
 ****** import_otu_data
 ****** import_metadata
