@@ -227,11 +227,12 @@ class Microbiome(object):
 
 def main():
     test_analysis = Microbiome(
-        "./data/microbiome", "./presentation/microbiome/figures", ".data/microbiome/cache", False)
-    test_analysis.plot_species_abundance_distributions()
-    test_analysis.plot_shannon_diversities()
-    test_analysis.get_dists()
-    test_analysis.plot_heatmaps()
+        "./amandin/data/microbiome", "./amandin/presentation/microbiome/figures", "./amandin/data/microbiome/cache", False)
+    print(test_analysis.otu_data)
+    # test_analysis.plot_species_abundance_distributions()
+    # test_analysis.plot_shannon_diversities()
+    # test_analysis.get_dists()
+    # test_analysis.plot_heatmaps()
 
 
 main()

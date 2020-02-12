@@ -7,51 +7,5 @@ Code for analysis is given, presentation & data is hidden.
 ** Microbiome Data Analysis
 ** Rapid Ohia Death Data Analysis 
 * Folder Structure
-All projects get their own folder
-Each project uses a common data folder
-** Analysis
-*** Microbiome
-**** Definitions
-***** Species
-      An organism with a certain DNA sequence
-***** Sample
-      A specific location
-***** Abundance Table
-      A matrix of Sample vs Species
-      If [A[i,j] = n], then [There are n species i at sample j] 
-**** Plots
-**** Variables
-** Project
 * Code Structure 
 ** Microbiome
-*** Classes
-**** Microbiome
-     A Class to represent a microbiome.
-***** Constructor
-****** import_otu_data
-****** import_metadata
-****** import_taxonomy
-****** get_taxonomic_levels
-#+BEGIN_SRC Python
-"""
-    def get_taxonomic_levels(self, taxonomic_tree):
-        name_by_dist = {}
-        for node in taxonomic_tree.traverse():
-            try:
-                name_by_dist[node.distance(
-                    taxonomic_tree.root())].append(node.name)
-            except KeyError:
-                name_by_dist[node.distance(taxonomic_tree.root())] = []
-                name_by_dist[node.distance(
-                    taxonomic_tree.root())].append(node.name)
-"""
-#+END_SRC
-***** Analysis Functions
-****** Unifrac Distance
-****** Bray Curtis Dissimilarity
-***** Plotting Methods
-****** Shannon Diversity
-****** Beta Diversity
-****** Alpha Diversity
-****** Abundance Table
-****** Distance Matrix
