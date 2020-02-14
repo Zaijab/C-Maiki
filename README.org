@@ -5,7 +5,16 @@ Code for analysis is given, presentation & data is hidden.
 
 ** Environmental Data Analysis
 ** Microbiome Data Analysis
+*** Data Input
+**** Abundance Table 97 / 100
+A .shared file
+A table that has counts Sample vs Otu
+**** Annotations 97
+A .taxonomy file
+**** Sequences 97
+A .fasta file
 ** Rapid Ohia Death Data Analysis 
 * Folder Structure
 * Code Structure 
 ** Microbiome
+** 
