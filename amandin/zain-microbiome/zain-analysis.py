@@ -85,7 +85,6 @@ class Microbiome(object):
                 hosts[metadata[sample]] += 1
             except KeyError:
                 hosts[metadata[sample]] = 1
-
         return metadata
 
     def import_taxonomy(self):
@@ -224,15 +223,21 @@ class Microbiome(object):
         plt.savefig(
             f'{self.data_path}/species_abundance_curve_5.pdf', bbox_inches='tight')
 
+    def plot_presence_vs_abundance_histogram(self):
+        plt.figure()
+        # Otu Count - otu_count[i] = total number of otu in all sample
+        otu_count = np.sum(self.otu_data, axis=0)
+        axes = plt.gca()
+        axes.set_xlim([0, 80000])
+        plt.hist(otu_count, bins=1000)
+        plt.savefig(f'{self.figure_path}/abundance_histogram.pdf')
+        plt.close()
+
 
 def main():
     test_analysis = Microbiome(
-        "./amandin/data/microbiome", "./amandin/presentation/microbiome/figures", "./amandin/data/microbiome/cache", False)
-    print(test_analysis.otu_data)
-    # test_analysis.plot_species_abundance_distributions()
-    # test_analysis.plot_shannon_diversities()
-    # test_analysis.get_dists()
-    # test_analysis.plot_heatmaps()
+        "./amandin/data/microbiome/sana", "./amandin/presentation/microbiome/figures", "./amandin/data/microbiome/cache", False)
+    test_analysis.plot_presence_vs_abundance_histogram()
 
 
 main()
