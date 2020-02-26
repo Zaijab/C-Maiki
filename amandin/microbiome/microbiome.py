@@ -151,123 +151,91 @@ class Microbiome(object):
         self.l2_dists = l2_dists
         return unifrac_dists.redundant_form(), unweighted_unifrac_dists.redundant_form(), l2_dists
 
+    def grouper(self):
+        # Create 3 groups based on presence
+        left, right = 20, 800
+        groups = [[] for i in range(3)]
+        for i in self.otu_data:
+            precence = np.sum(np.where(i > 0, 1, i))
+            if precence < left:
+                groups[0].append(i)
+            elif left < precence < right:
+                groups[1].append(i)
+            else:
+                groups[2].append(i)
+        return [groups[0], groups[1], groups[2]]
+
+    def compute_abundance(self, vals):
+        self.abunance = np.sum(vals, axis=1)
+        return self.abunance
+
+    def compute_precence(self, vals):
+        self.precence = np.sum(np.where(vals > 0, 1, vals), axis=1)
+        return self.precence
     # Plotting Functions
 
-    def plot_heatmaps(self):
-        for name, dist in zip(['unifrac', 'unweighted', 'l2'], [self.unifrac_dists, self.unweighted_unifrac_dists, self.l2_dists]):
-            plt.figure()
-            plt.imshow(dist, cmap='hot')
-            plt.xlabel('sample \#')
-            plt.ylabel('sample \#')
-            cbar = plt.colorbar()
-            cbar.set_label('distance')
-            plt.title(f'{name}')
-            plt.savefig(
-                f'{self.figure_path}/{name}_distance_matrix.pdf', bbox_inches='tight')
-
-    def plot_shannon_diversities(self):
+    def plot_abundance_histogram(self, vals, name=None):
         plt.figure()
-        count = 0
-        shannons = []
-        for i, sample in enumerate(self.otu_data):
-            nonzero_samp = [val for val in sample if val > 0]
-            normed_samp = nonzero_samp/np.sum(nonzero_samp)
-            if len(normed_samp) > 100:
-                shannon_div = sum([-val*np.log(val)
-                                   for val in normed_samp])/np.log(len(normed_samp))
-                shannons.append(shannon_div)
-                count += 1
-        plt.hist(shannons, bins=30, alpha=.5)
-        fake_shannons = []
-        for i in range(400):
-            lognormal = np.random.lognormal(sigma=1.4, size=50)
-            ordered_samp = [val for val in lognormal if val > 0]
-            normed_samp = ordered_samp/np.sum(ordered_samp)
-            shannon_div = sum([-val*np.log(val)
-                               for val in normed_samp])/np.log(len(normed_samp))
-            fake_shannons.append(shannon_div)
-        plt.hist(fake_shannons, bins=30, alpha=.5)
-        print(f'using {count} out of {len(self.otu_data)} samples')
-        ax = plt.gca()
-        ax.set_xlim([0, 1])
-        plt.xlabel('shannon diversity')
-        plt.ylabel('\# occurrences')
-        plt.savefig(f'{self.figure_path}/shannon_div_1.pdf',
-                    bbox_inches='tight')
-
-    def plot_species_abundance_distributions(self):
-        plt.figure()
-        count = 0
-        for i, sample in enumerate(self.otu_data):
-            ordered_samp = np.copy(sample)
-            ordered_samp.sort()
-            ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
-            normed_samp = ordered_samp/np.sum(ordered_samp)
-            if len(normed_samp) > 100:
-                count += 1
-                plt.step(np.linspace(0, 100, len(normed_samp)),
-                         normed_samp, lw=.5)
-        lognormal = np.random.lognormal(size=500)
-        ordered_samp = np.copy(lognormal)
-        ordered_samp.sort()
-        ordered_samp = [val for val in ordered_samp[::-1] if val > 0]
-        normed_samp = ordered_samp/np.sum(ordered_samp)
-        plt.step(np.linspace(0, 100, len(normed_samp)),
-                 normed_samp, color='k', lw=5)
-        print(f'using {count} out of {len(self.otu_data)} samples')
-        ax = plt.gca()
-        ax.set_yscale('log')
-        plt.axis([None, None, None, 1])
-        plt.xlabel('\% species')
-        plt.ylabel('relative abundance')
-        plt.savefig(
-            f'{self.data_path}/species_abundance_curve_5.pdf', bbox_inches='tight')
-
-    def plot_abundance_histogram(self):
-        plt.figure()
-        # Otu Count - otu_count[i] = total number of otu in all sample
-        self.abundance_count = np.sum(self.otu_data, axis=1)
         #axes = plt.gca()
         #axes.set_xlim([10, 10000])
         plt.xlabel("Abundance")
         plt.ylabel("Sample")
-        plt.hist(self.abundance_count, bins=100)
-        plt.savefig(f'{self.figure_path}/abundance_histogram_sana.pdf')
+        plt.hist(np.sum(vals, axis=1), bins=100)
+        plt.savefig(f'{self.figure_path}/abundance_histogram_{name}.pdf')
         plt.close()
 
-    def plot_presence_histogram(self):
+    def plot_presence_histogram(self, vals, name=None):
         plt.figure()
-        # Otu Count - otu_count[i] = total number of otu in all sample
-        self.presence_count = np.sum(
-            np.where(self.otu_data > 0, 1, self.otu_data), axis=1)
-        axes = plt.gca()
-        axes.set_xlim([20, 10000])
+        #axes = plt.gca()
+        #axes.set_xlim([20, 10000])
         plt.xlabel("Presence")
         plt.ylabel("Sample")
-        plt.hist(self.presence_count, bins=100)
-        plt.savefig(f'{self.figure_path}/presence_histogram_sana.pdf')
+        plt.hist(np.sum(np.where(vals > 0, 1, vals), axis=1), bins=100)
+        plt.savefig(f'{self.figure_path}/presence_histogram_{name}.pdf')
         plt.close()
 
-    def plot_presence_vs_abundance_scatter(self):
+    def plot_presence_vs_abundance_scatter(self, vals, name=None):
         plt.figure()
         plt.xlabel("Presence")
         plt.ylabel("Abundance")
-        plt.scatter(self.presence_count, self.abundance_count)
+        abundance = np.sum(vals, axis=1)
+        precence = np.sum(np.where(vals > 0, 1, vals), axis=1)
+        plt.scatter(precence, abundance)
         plt.savefig(
-            f'{self.figure_path}/presence_vs_abundance_scatter_sana.pdf')
+            f'{self.figure_path}/presence_vs_abundance_scatter_{name}.pdf')
         plt.close()
 
 
 def main():
-    data_path = "./amandin/data/microbiome/sana"
+    data_path = "./amandin/data/microbiome/zain"
     figure_path = "./amandin/presentation/microbiome/figures"
     cache_path = "./amandin/data/microbiome/cache"
     load_data = False
     test_analysis = Microbiome(data_path, figure_path, cache_path, load_data)
 
-    test_analysis.plot_abundance_histogram()
-    test_analysis.plot_presence_histogram()
-    test_analysis.plot_presence_vs_abundance_scatter()
+    otu_data = test_analysis.otu_data
+
+    test_analysis.plot_abundance_histogram(otu_data, "total")
+    test_analysis.plot_presence_histogram(otu_data, "total")
+    test_analysis.plot_presence_vs_abundance_scatter(otu_data, "total")
+
+    groups = test_analysis.grouper()
+
+    test_analysis.plot_presence_histogram(np.array(groups[0]), "less_than_20")
+    test_analysis.plot_abundance_histogram(np.array(groups[0]), "less_than_20")
+    test_analysis.plot_presence_vs_abundance_scatter(
+        np.array(groups[0]), "less_than_20")
+
+    test_analysis.plot_presence_histogram(np.array(groups[1]), "between")
+    test_analysis.plot_abundance_histogram(np.array(groups[1]), "between")
+    test_analysis.plot_presence_vs_abundance_scatter(
+        np.array(groups[1]), "between")
+
+    test_analysis.plot_presence_histogram(np.array(groups[2]), "more_than_800")
+    test_analysis.plot_abundance_histogram(
+        np.array(groups[2]), "more_than_800")
+    test_analysis.plot_presence_vs_abundance_scatter(
+        np.array(groups[2]), "more_than_800")
 
 
 main()
