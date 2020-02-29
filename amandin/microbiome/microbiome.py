@@ -151,6 +151,16 @@ class Microbiome(object):
         self.l2_dists = l2_dists
         return unifrac_dists.redundant_form(), unweighted_unifrac_dists.redundant_form(), l2_dists
 
+    def l1_distances(self, vals, name):
+        plt.figure()
+        plt.title("Heatmap l1 distance")
+        plt.ylabel("Sample")
+        plt.xlabel("Distance")
+        dists = distance.pdist(vals, metric='minkowski', p=1)
+        self.dists = dists
+        plt.hist(dists)
+        plt.savefig(f'{self.figure_path}/l1_dist_{name}.pdf')
+
     def grouper(self):
         # Create 3 groups based on presence
         left, right = 20, 800
@@ -198,6 +208,8 @@ class Microbiome(object):
         plt.figure()
         plt.xlabel("Presence")
         plt.ylabel("Abundance")
+        #axes = plt.gca()
+        #axes.set_xlim([-1, 25])
         abundance = np.sum(vals, axis=1)
         precence = np.sum(np.where(vals > 0, 1, vals), axis=1)
         plt.scatter(precence, abundance)
@@ -215,6 +227,8 @@ def main():
 
     otu_data = test_analysis.otu_data
 
+
+"""
     test_analysis.plot_abundance_histogram(otu_data, "total")
     test_analysis.plot_presence_histogram(otu_data, "total")
     test_analysis.plot_presence_vs_abundance_scatter(otu_data, "total")
@@ -231,11 +245,19 @@ def main():
     test_analysis.plot_presence_vs_abundance_scatter(
         np.array(groups[1]), "between")
 
+    print(type(groups[2]))
     test_analysis.plot_presence_histogram(np.array(groups[2]), "more_than_800")
     test_analysis.plot_abundance_histogram(
         np.array(groups[2]), "more_than_800")
     test_analysis.plot_presence_vs_abundance_scatter(
         np.array(groups[2]), "more_than_800")
+"""
+
+test_analysis.l1_distances(groups[0], "Less than 20")
+test_analysis.l1_distances(groups[1], "Between")
+test_analysis.l1_distances(groups[2], "Greater than 800")
+
+print(len(groups[1]), len(groups[1])*(len(groups[1])-1)/2)
 
 
 main()
