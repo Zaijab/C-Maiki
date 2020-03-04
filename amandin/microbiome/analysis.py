@@ -12,7 +12,7 @@ otu_data_path = "../data/microbiome/zain/abundance_table_97.shared"
 # Import Relevent Data from files
 
 
-def import_otu_data(filename='../data/genetic/16S/abundance_table_97.shared', load_data=False):
+def import_otu_data(filename='../data/microbiome/zain/abundance_table_97.shared', load_data=False):
     """ Import abundance data from file. sample_data is a list of strings of
     each sample name ['100001', '100002', etc.]. otu_data is a matrix of
     abundances, with otu_data[i] corresponding to sample i and consisting of a
@@ -111,9 +111,11 @@ def get_host_distribution(sample_names, otu_data, metadata, verbose=False):
     return metadata
 
 
+# Import Otu Data and metadata
+data_path = "./amandin/data/microbiome/zain/abundance_table_100.shared"
+sample_names, otu_data = import_otu_data(data_path)
+
 # Start creating Abundance table with metadata
-with h5py.File("microbiome.hdf5", "w") as microbiome:
-    microbiome.create_dataset("otu_data", data=otu_data_path)
-
-
-# type(import_otu_data())
+microbiome = h5py.File("mytestfile.hdf5", "w")
+microbiome.create_dataset("otu_data", otu_data)
+microbiome.close()
