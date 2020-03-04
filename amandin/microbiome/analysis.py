@@ -117,5 +117,6 @@ sample_names, otu_data = import_otu_data(data_path)
 
 # Start creating Abundance table with metadata
 microbiome = h5py.File("mytestfile.hdf5", "w")
-microbiome.create_dataset("otu_data", otu_data)
+microbiome.create_dataset("otu_data", data=otu_data)
+print(microbiome)
 microbiome.close()
