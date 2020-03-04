@@ -116,7 +116,10 @@ data_path = "./amandin/data/microbiome/zain/abundance_table_100.shared"
 sample_names, otu_data = import_otu_data(data_path)
 
 # Start creating Abundance table with metadata
-microbiome = h5py.File("mytestfile.hdf5", "w")
-microbiome.create_dataset("otu_data", data=otu_data)
-print(microbiome)
+microbiome = h5py.File("./amandin/microbiome/microbiome.hdf5", "w")
+otu_dataset = microbiome.create_dataset("otu_data", data=otu_data)
+print(microbiome.keys())
+print(microbiome.attrs.keys())
+for key in microbiome.keys():
+    print(microbiome[key])
 microbiome.close()
