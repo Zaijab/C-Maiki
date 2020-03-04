@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 import time
 import matplotlib.pyplot as plt
-import skbio
 
 # Initialize Files and Paths
 microbiome = h5py.File("micorbiome.hdf5", "w")
@@ -86,10 +85,6 @@ def import_taxonomy(filename='../data/genetic/16S/annotations_97.taxonomy', load
     taxonomic_tree = taxonomic_tree.root_at(taxonomic_tree)
     for node in taxonomic_tree.traverse():
         node.length = 1
-
-    # print(taxonomies['Otu00001'])
-    #[print(node.name, node.distance(taxonomic_tree.root())) for node in taxonomic_tree.find('Otu00001').ancestors()]
-
     with open(pickle_filename, 'wb') as f:
         pickle.dump((otu_names, taxonomies, taxonomic_tree), f)
     return otu_names, taxonomies, taxonomic_tree
@@ -119,4 +114,6 @@ def get_host_distribution(sample_names, otu_data, metadata, verbose=False):
 # Start creating Abundance table with metadata
 with h5py.File("microbiome.hdf5", "w") as microbiome:
     microbiome.create_dataset("otu_data", data=otu_data_path)
-    print(microbiome["otu_data"].shape)
+
+
+# type(import_otu_data())
