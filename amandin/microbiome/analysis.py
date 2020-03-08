@@ -6,7 +6,6 @@ import time
 import matplotlib.pyplot as plt
 
 # Initialize Files and Paths
-microbiome = h5py.File("micorbiome.hdf5", "w")
 otu_data_path = "../data/microbiome/zain/abundance_table_97.shared"
 
 # Import Relevent Data from files
