@@ -43,3 +43,8 @@ otu_names = ['Otu00001', 'Otu00002, ...]
 **** taxonomies (Dictionary)
 **** taxonomic_tree (Skbio Tree)
 *** Methods
+* Notes
+
+
+473 31475
+Total= 14887675 Zero 14751791 Sparcity= 0.990872718540672

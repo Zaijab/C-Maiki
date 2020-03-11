@@ -3,4 +3,5 @@ amandin/data/**
 amandin/manuscripts/**
 amandin/notes/**
 amandin/trees/opencv/*
-amandin/microbiome/microbiome.hdf5
+amandin/microbiome/data/*
+amandin/microbiome/plots/*
