@@ -1,3 +1,14 @@
+
+"""
+groups = [
+    abundance_table,
+    abundance_table.loc[abundance_table["Presence"] < 20],
+    abundance_table.loc[(20 <= abundance_table["Presence"])
+                        & (abundance_table["Presence"] < 600)],
+    abundance_table.loc[600 <= abundance_table["Presence"]],
+]
+"""
+
 presence_count = np.sum(
     np.where(abundance_table > 0, 1, 0), axis=1)
 abundance_count = np.sum(abundance_table, axis=1)
@@ -210,3 +221,34 @@ plt.ylabel("# of elements")
 plt.hist(weights.to_numpy().flatten(), bins=range(0, 1, 0.01))
 plt.savefig(f"{figure_path}/weight_matrix_histogram_group1.pdf")
 plt.close()
+abundance_table.drop(
+    'Abundance', axis=1
+
+for sigma in np.linspace(0, 1, 100):
+    for i, dists in enumerate(group_weights):
+        dist=dists / np.amax(dists)
+        dist=np.exp(- (dist ** 2) / (sigma ** 2))
+        plt.figure()
+        plt.xlabel("Kernel")
+        plt.ylabel("# of Elements")
+        plt.title(f"Kernel Group {i+1} Sigma {sigma}")
+        plt.hist(dist.to_numpy().flatten(), bins=np.linspace(0, 1, 50))
+        plt.savefig(
+            f"{figure_path}/sigmas/kernel_matrix_histogram_group{i+1}_{sigma}.pdf")
+        plt.close()
+"""
+for i, distance_matrix in enumerate(group_weights):
+    dist = distance_matrix / np.amax(distance_matrix)
+    mu = np.mean(dist)
+    variance = np.var(dist)
+    dist = ((dist - mu) ** 2) / variance
+    plt.figure()
+    plt.xlabel("Kernel")
+    plt.ylabel("# of Elements")
+    plt.title(f"Kernel Group {i+1} Sigma {sigma}")
+    plt.hist(dist.to_numpy().flatten(), bins=np.linspace(0, 1, 50))
+    plt.savefig(
+        f"{figure_path}/sigmas/kernel_matrix_histogram_group{i+1}_zscore.pdf")
+    plt.close()
+
+"""
