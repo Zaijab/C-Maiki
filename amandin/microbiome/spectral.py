@@ -8,6 +8,12 @@ import warnings
 import time
 print(__doc__)
 
+group_weight_hat = [
+    pd.DataFrame(
+        np.linalg.inv(diagonal) * weight,
+        columns=diagonal.columns,
+        index=diagonal.index)
+    for diagonal, weight in zip(group_diagonal, normalized_group_weight)]
 group_laplacian_hat = [
     pd.DataFrame(
         np.linalg.inv(diagonal) * laplacian,
