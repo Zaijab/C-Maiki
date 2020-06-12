@@ -1,0 +1,17 @@
+Smallest
+105385 - Presence 5 - 
+Largest
+105180 - Presence 772 - 
+
+
+lat
+21.63719
+long
+-158.057326
+
+lat
+21.61986
+long
+-158.015093
+
+# Darker as you go to bottom right

@@ -1,5 +1,0 @@
-* Plot 3 Eigenvectors
-* Scatter plot with shape/color
-* Import GPS location
-* Layer when chyba tells you too
-* Number scatter plot with site number
