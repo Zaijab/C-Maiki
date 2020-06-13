@@ -15,3 +15,7 @@ long
 -158.015093
 
 # Darker as you go to bottom right
+
+Look for 3 mosquito samples
+
+105385, 105502, 105457
