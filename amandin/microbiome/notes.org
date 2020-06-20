@@ -31,3 +31,20 @@ Look for 3 mosquito samples
 105279, 105094
 
 105092, 105525
+
+* Three dropped mosquitos
+  
+105279,Miseq04_16S,TACTGTACTGTT,03039,bacterial16S,4,G,01,G01,515f,806r,515rcbc360,WMEA_03039_An_9,Mosquito,Supertransect,19,9,STGardens9,STGardens,20190617,Mosquito,Terrestrial,Animal,Carnivore,Transect,Aedes albopictus F non-blooded,21.63334801,-158.052043,NA,Collected and identified by Medeiros Lab,
+
+105525,Miseq04_16S,ACACTCATTACT,03054,bacterial16S,7,G,07,G07,515f,806r,515rcbc654,WMEA_03054_An_9,Mosquito,Supertransect,28,9,STFalls9,STFalls,20190619,Mosquito,Terrestrial,Animal,Carnivore,Transect,Aedes albopictus F non-blooded,21.63056597,-158.044273,NA,Collected and identified by Medeiros Lab,
+
+105502,Miseq04_16S,AATCATTTGTAA,03087,bacterial16S,7,H,04,H04,515f,806r,515rcbc663,WMEA_03087_An_5,Mosquito,Supertransect,33,5,STAboveFalls,STAboveFalls,20190619,Mosquito,Terrestrial,Animal,Carnivore,Transect,Aedes albopictus F non-blooded,21.63076999,-158.039635,NA,Collected by Mel and identified by Medeiros Lab,
+
+rufus willet assoc chair ask about 4+1 
+
+* Fruit Fly in Mosquito
+105346,Miseq04_16S,GATCCCACGTAC,3123,bacterial16S,4,B,10,B10,515f,806r,515rcbc309,WMEA_03123_An_1,Drosophila,SuperTransect,38.0,1,STDrumRoadMakai1,STDrumRoadMakai,20190618.0,Drosophila,Terrestrial,Animal,Herbivore,Transect,Drosophila quadrilineata,21.62209304,-158.019156,,Collected by Matthew Medeiros and identified by Yew lab,
+105262,Miseq04_16S,GTACTCGAACCA,3165,bacterial16S,3,F,11,F11,515f,806r,515rcbc262,WMEA_03165_An_8,Drosophila,SuperTransect,45.0,8,STDrumRoadMakai8,STDrumRoadMakai,20190618.0,Drosophila,Terrestrial,Animal,Herbivore,Transect,Drosophila quadrilineata,21.61986002,-158.015093,,Collected by Matthew Medeiros and identified by Yew lab,
+
+* Mosquito in Positive Cluster
+105525,Miseq04_16S,ACACTCATTACT,3054,bacterial16S,7,G,7,G07,515f,806r,515rcbc654,WMEA_03054_An_9,Mosquito,Supertransect,28.0,9,STFalls9,STFalls,20190619.0,Mosquito,Terrestrial,Animal,Carnivore,Transect,Aedes albopictus F non-blooded,21.63056597,-158.044273,,Collected and identified by Medeiros Lab,
