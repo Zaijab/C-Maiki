@@ -12,7 +12,7 @@
  * The optimal parameters can then be used in a simulation, be plotted, and documented.
  *
  * The code adapts the model equations by using array indicies to function as subscripts in the model.
- * This means that E_m(t) in math gets translated to E[m][t] in C.
+ * This means that E_m(t) in math gets translated to E[1][t] in C.
  * However arrays are indexed by natural numbers, thus the following key associates groups to natural numbers.
  * h -> 0
  * m -> 1
@@ -64,55 +64,55 @@ int main(int argc, char** argv){
  */
 void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int t,
 		   float l[][], float p[], float q[], float h[][], float r) {
-  S[c][t+1] = exp(-l[c][t]) * S[c][t];
-  E[c][1][t+1] = (1 - exp(-l[c][t])) * S[c][t];
+  S[2][t+1] = exp(-l[2][t]) * S[2][t];
+  E[2][1][t+1] = (1 - exp(-l[2][t])) * S[2][t];
   
   for(int i = 2; i <= 14; i++) {
-    E[c][i][t+1] = (1 - p[i-1]) * E[c][i-1][t];
+    E[2][i][t+1] = (1 - p[i-1]) * E[2][i-1][t];
   }
   
   for(int i = 1; i <= 14; i++) {
-    I[c][1][t+1] += p[i]*(1-q[i])*E[c][i][t];
+    I[2][1][t+1] += p[i]*(1-q[i])*E[2][i][t];
   }
-  I[c][2][t+1] = (1-h[c][1])*I[c][1][t];
-  I[c][3][t+1] = (1-h[c][2])*I[c][2][t] + (1-r)(1-h[c][3])*I[c][3][t];
+  I[2][2][t+1] = (1-h[2][1])*I[2][1][t];
+  I[2][3][t+1] = (1-h[2][2])*I[2][2][t] + (1-r)(1-h[2][3])*I[2][3][t];
   for(int j = 4; j <= 5; j++) {
-    I[c][j] = r*(1-h[c][j-1])*I[c][j-1][t] + (1-r)(1-h[c][j])*I[c][j][t];
+    I[2][j] = r*(1-h[2][j-1])*I[2][j-1][t] + (1-r)(1-h[2][j])*I[2][j][t];
   }
-  R[c][t+1] = R[c][t] + r*I[c][5][t]+r*I[m][5][t];
+  R[2][t+1] = R[2][t] + r*I[2][5][t]+r*I[1][5][t];
   
-  S[h][t+1] = exp(-l[h][t]) * S[h][t];
-  E[h][1][t+1] = (1 - exp(-l[h][t])) * S[h][t];
+  S[0][t+1] = exp(-l[0][t]) * S[0][t];
+  E[0][1][t+1] = (1 - exp(-l[0][t])) * S[0][t];
   
   for(int i = 2; i <= 14; i++) {
-    E[h][i][t+1] = (1 - p[i-1]) * E[h][i-1][t];
+    E[0][i][t+1] = (1 - p[i-1]) * E[0][i-1][t];
   }
   
   for(int i = 1; i <= 14; i++) {
-    I[h][1][t+1] += p[i]*(1-q[i])*E[h][i][t];
+    I[0][1][t+1] += p[i]*(1-q[i])*E[0][i][t];
   }
-  I[h][2][t+1] = (1-h[h][1])*I[h][1][t];
-  I[h][3][t+1] = (1-h[h][2])*I[h][2][t] + (1-r)(1-h[h][3])*I[h][3][t];
+  I[0][2][t+1] = (1-h[0][1])*I[0][1][t];
+  I[0][3][t+1] = (1-h[0][2])*I[0][2][t] + (1-r)(1-h[0][3])*I[0][3][t];
   for(int j = 4; j <= 5; j++) {
-    I[h][j] = r*(1-h[h][j-1])*I[h][j-1][t] + (1-r)(1-h[h][j])*I[h][j][t];
+    I[0][j] = r*(1-h[0][j-1])*I[0][j-1][t] + (1-r)(1-h[0][j])*I[0][j][t];
   }
-  R[h][t+1] = R[h][t] + r*I[h][5][t]+r*I[m][5][t];
+  R[0][t+1] = R[0][t] + r*I[0][5][t]+r*I[1][5][t];
   
   for(int i = 2; i <= 14; i++) {
-    E[m][t+1] = (1 - p[i - 1])*(q[i] * E[c][i - 1][t] + E[m][i - 1][t]);
+    E[1][t+1] = (1 - p[i - 1])*(q[i] * E[2][i - 1][t] + E[1][i - 1][t]);
   }
 
-  I[m][1][t+1] = 0;
+  I[1][1][t+1] = 0;
   for(int i = 1; i <= 14; i++) {
-    I[m][1][t+1] += p[i]*(q[i]*E[c][i][t] + E[m][i][t]);
+    I[1][1][t+1] += p[i]*(q[i]*E[2][i][t] + E[1][i][t]);
   }			  
-  I[m][2][t+1] = h[c][1] * I[c][1][t] + h[h][1] * I[h][1][t] + I[m][1][t];
-  I[m][3][t + 1] = r * (h[c][2] * I[c][2][t] + h[h][2] * I[h][2][t] + I[m][2][t])
-    + (1 - r)*(h[c][3] * I[c][3][t] + h[h][3] * I[h][3][t] + I[m][1][t]);
+  I[1][2][t+1] = h[2][1] * I[2][1][t] + h[0][1] * I[0][1][t] + I[1][1][t];
+  I[1][3][t + 1] = r * (h[2][2] * I[2][2][t] + h[0][2] * I[0][2][t] + I[1][2][t])
+    + (1 - r)*(h[2][3] * I[2][3][t] + h[0][3] * I[0][3][t] + I[1][1][t]);
   
   for(int j = 4; j <= 5; j++) {
-    I[m][j][t + 1] = r * (h[c][j - 1] * I[c][j - 1][t] + h[h][j - 1] * I[h][j - 1][t] + I[m][j - 1][t])
-      + (1 - r)*(h[c][j] * I[c][j][t] + h[h][j] * I[h][j][t] + I[m][j][t]);
+    I[1][j][t + 1] = r * (h[2][j - 1] * I[2][j - 1][t] + h[0][j - 1] * I[0][j - 1][t] + I[1][j - 1][t])
+      + (1 - r)*(h[2][j] * I[2][j][t] + h[0][j] * I[0][j][t] + I[1][j][t]);
   }
 }
 
@@ -127,10 +127,11 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
  * -----------
  */
 int* model_solver(int t, float l[][][], float p[], float q[], float h[][], float r) {
-  float S[][];
-  float E[][][];
-  float I[][][];
-  float R[][][];
+  float S[3][t];
+  float E[3][14][t];
+  float I[3][5][t];
+  float R[3][t];
+  
   return {1};
 }
 
