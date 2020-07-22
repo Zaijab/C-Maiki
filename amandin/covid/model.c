@@ -45,16 +45,28 @@ int main(int argc, char** argv){
 
 /* FUNCTION: model_updater
  * -----------------------
- * 
+ * Implementation of the difference equations. 
+ * The function takes in state variables S, E, I, R, and t, along with parameters, l, p, q, h, and r.
+ * Using the given state variables and parameters, the model can advance one day.
  *
  * PARAMETERS:
  * -----------
+ * S 
+ * E
+ * I
+ * R
+ * t
+ * l
+ * p
+ * q
+ * h
+ * r
  */
 void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int t,
 		   float l[][], float p[], float q[], float h[][], float r) {
   S[c][t+1] = exp(-l[c][t]) * S[c][t];
   E[c][1][t+1] = (1 - exp(-l[c][t])) * S[c][t];
-
+  
   for(int i = 2; i <= 14; i++) {
     E[c][i][t+1] = (1 - p[i-1]) * E[c][i-1][t];
   }
@@ -68,10 +80,10 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
     I[c][j] = r*(1-h[c][j-1])*I[c][j-1][t] + (1-r)(1-h[c][j])*I[c][j][t];
   }
   R[c][t+1] = R[c][t] + r*I[c][5][t]+r*I[m][5][t];
-
+  
   S[h][t+1] = exp(-l[h][t]) * S[h][t];
   E[h][1][t+1] = (1 - exp(-l[h][t])) * S[h][t];
-
+  
   for(int i = 2; i <= 14; i++) {
     E[h][i][t+1] = (1 - p[i-1]) * E[h][i-1][t];
   }
@@ -85,10 +97,10 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
     I[h][j] = r*(1-h[h][j-1])*I[h][j-1][t] + (1-r)(1-h[h][j])*I[h][j][t];
   }
   R[h][t+1] = R[h][t] + r*I[h][5][t]+r*I[m][5][t];
-
+  
   for(int i = 2; i <= 14; i++) {
     E[m][t+1] = (1 - p[i - 1])*(q[i] * E[c][i - 1][t] + E[m][i - 1][t]);
-    }
+  }
 
   I[m][1][t+1] = 0;
   for(int i = 1; i <= 14; i++) {
@@ -106,12 +118,15 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
 
 /* FUNCTION: model_solver
  * ----------------------
- *
+ * Initializes state variables S, E, I, R, and t and takes in the parameters for the model.
+ * Will call on model_updater (t-1) times to get (t) many days of simulated data.
+ * Returns an array of integers representing the daily counts (the thing we need to match the data).
+ * model_optimizer will use this returned array to generate an error value.
  *
  * PARAMETERS:
  * -----------
  */
-void model_solver(int t, float l[][][], float p[], float q[], float h[][], float r) {
+int* model_solver(int t, float l[][][], float p[], float q[], float h[][], float r) {
   float S[][];
   float E[][][];
   float I[][][];
