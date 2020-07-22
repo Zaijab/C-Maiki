@@ -31,8 +31,8 @@ void model_optimizer(float* l[][], float* p[], float* q[], float* h[][], float* 
 
 /* FUNCTION: main
  * --------------
- * Entry point of the program
- * To intstantiate initial values of the parameters then run model_optimizer to mutate them
+ * Entry point of the program.
+ * To intstantiate initial values of the parameters then run model_optimizer to mutate them. 
  *
  * PARAMETERS:
  * -----------
