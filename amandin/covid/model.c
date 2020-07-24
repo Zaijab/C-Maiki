@@ -16,20 +16,27 @@
  * However arrays are indexed by natural numbers, thus the following key associates groups to natural numbers.
  * h -> 0
  * m -> 1
- * c -> >=2
+ * c -> 2
  * c (the community group) will be 2 for the time being, but the plans are for the model to expand.
- * So there can be more community indicies later.
+ * So there can be more community indicies later. 
+ * Thus, the code is designed to allow for c to be any value greater than 2.
  */
 
-#include <math.h>
-#include <stdio.h>
+#include <math.h> // Using exp()
+#include <stdio.h> // Using printf()
 
-int model_updater(double** S, double*** E, double*** I, double** R, int t,
-		  double** l, double* p, double* q, double** h, double r);
+/* I define a time to run the simulation here. Change the variable then recompile to get different lengths of simulation.
+ * The reason is to make the array indicies known at compile time rather than using a variable on the stack / heap.
+ * C gets mad if I don't do this.
+ */
+#define SIMULATION_TIME 100
+
+void model_optimizer(int t, double** l, double* p, double* q, double** h, double r);
 
 void model_solver(int t, double** l, double* p, double* q, double** h, double r, int* result);
 
-void model_optimizer(int t, double*** l, double** p, double** q, double*** h, double* r);
+int model_updater(double** S, double*** E, double*** I, double** R, int t,
+		  double** l, double* p, double* q, double** h, double r);
  
 /* FUNCTION: main
  * --------------
@@ -42,8 +49,7 @@ void model_optimizer(int t, double*** l, double** p, double** q, double*** h, do
  * argv : char** : array of character arrays, each index holds one commandline argument
  */
 int main(int argc, char** argv){
-  int t = 100;
-  double l[3][t]; // [Group, Last day of simuation]
+  double l[3][SIMULATION_TIME]; // [Group, Last day of simuation]
   double p[14]; // [Day of exposure]
   double q[14]; // [Day of exposure]
   double h[3][5]; // [Group, Day of infection]
@@ -64,14 +70,12 @@ int main(int argc, char** argv){
   }
 
   for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < 5; j++) {
-      h[i][j] = 0;
+    for(int j = 0; j < t; j++) {
+      l[i][j] = 0;
     }
   }
-
-  r = 0;
   
-  model_optimizer(t, &l, &p, &q, &h, &r);
+  model_optimizer(t, l, p, q, h, r);
   
   return 0;
 }
@@ -100,8 +104,8 @@ int main(int argc, char** argv){
  * The new infected count on that day.
  * The new count is calculated by looking at the positive flux into the managed pool
  */
-int model_updater(double** S, double*** E, double*** I, double** R, int t,
-		   double** l, double* p, double* q, double** h, double r) {
+int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME], double I[3][5][SIMULATION_TIME], double R[3][SIMULATION_TIME], int t,
+		   double l[3][SIMULATION_TIME], double p, double q, double h[][], double r) {
   S[2][t+1] = exp(-l[2][t]) * S[2][t];
   E[2][1][t+1] = (1 - exp(-l[2][t])) * S[2][t];
   
@@ -164,21 +168,21 @@ int model_updater(double** S, double*** E, double*** I, double** R, int t,
  * PARAMETERS:
  * -----------
  */
-void model_solver(int t, double*** l, double* p, double* q, double** h, double r, int* result) {
-  double S[3][t];
-  double E[3][14][t];
-  double I[3][5][t];
-  double R[3][t];
+void model_solver(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r, int result[SIMULATION_TIME]) {
+  double S[3][SIMULATION_TIME];
+  double E[3][14][SIMULATION_TIME];
+  double I[3][5][SIMULATION_TIME];
+  double R[3][SIMULATION_TIME];
 
   for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < t; j++) {
+    for(int j = 0; j < SIMULATION_TIME; j++) {
 	S[i][j] = 0;
     }
   }
   
   for(int i = 0; i < 3; i++) {
     for(int j = 0; j < 14; j++) {
-      for(int k = 0; k < t; k++) {
+      for(int k = 0; k < SIMULATION_TIME; k++) {
 	E[i][j][k] = 0;
       }
     }
@@ -186,18 +190,18 @@ void model_solver(int t, double*** l, double* p, double* q, double** h, double r
   
   for(int i = 0; i < 3; i++) {
     for(int j = 0; j < 5; j++) {
-      for(int k = 0; k < t; k++) {
+      for(int k = 0; k < SIMULATION_TIME; k++) {
 	I[i][j][k] = 0;
       }
     }
   }
   for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < t; j++) {
+    for(int j = 0; j < SIMULATION_TIME; j++) {
 	R[i][j] = 0;
     }
   }
 
-  for(int i = 0; i < t; i++) {
+  for(int i = 0; i < SIMULATION_TIME; i++) {
     result[i] = model_updater(S, E, I, R, i, l, p, q, h, r) // Using the state variables and parameters, update the model each day
   }
 }
@@ -211,17 +215,17 @@ void model_solver(int t, double*** l, double* p, double* q, double** h, double r
  * PARAMETERS:
  * -----------
  */
-void model_optimizer(int t, double**** l, double** p, double** q, double*** h, double* r) {
+void model_optimizer(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
 
-  int result[t];
+  int result[SIMULATION_TIME];
 
-  for(int i = 0; i < t; i++) {
+  for(int i = 0; i < SIMULATION_TIME; i++) {
     result[i] = 0;
   }
 
-  model_updater(t, l*, p*, q*, h*, r*, result);
+  model_updater(l, p, q, h, r, result);
 
-  for(i = 0; i < t; i++) {
+  for(i = 0; i < SIMULATION_TIME; i++) {
     printf(result[i]);
   }
 }
