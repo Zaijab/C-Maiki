@@ -23,12 +23,13 @@
 
 #include <math.h>
 
-void model_updater(float S[][], float E[][][], float I[][][], float R[][], float l[][], float p[], float q[], float h[][], float r, int t);
+int model_updater(double** S, double*** E, double*** I, double** R, int t,
+		  double** l, double* p, double* q, double** h, double r);
 
-int* model_solver(float l[][], float p[], float q[], float h[][], float r, int t);
+void model_solver(int t, double*** l, double* p, double* q, double** h, double r, int* result);
 
-void model_optimizer(float* l[][], float* p[], float* q[], float* h[][], float* r, int t);
-
+void model_optimizer(int t, double**** R, double**** l, double** p, double** q, double*** h, double* r);
+ 
 /* FUNCTION: main
  * --------------
  * Entry point of the program.
@@ -61,9 +62,14 @@ int main(int argc, char** argv){
  * q
  * h
  * r
+ *
+ * RETURNS:
+ * --------
+ * The new infected count on that day.
+ * The new count is calculated by looking at the positive flux into the managed pool
  */
-void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int t,
-		   float l[][], float p[], float q[], float h[][], float r) {
+int model_updater(double** S, double*** E, double*** I, double** R, int t,
+		   double** l, double* p, double* q, double** h, double r) {
   S[2][t+1] = exp(-l[2][t]) * S[2][t];
   E[2][1][t+1] = (1 - exp(-l[2][t])) * S[2][t];
   
@@ -75,9 +81,9 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
     I[2][1][t+1] += p[i]*(1-q[i])*E[2][i][t];
   }
   I[2][2][t+1] = (1-h[2][1])*I[2][1][t];
-  I[2][3][t+1] = (1-h[2][2])*I[2][2][t] + (1-r)(1-h[2][3])*I[2][3][t];
+  I[2][3][t+1] = (1-h[2][2])*I[2][2][t] + (1-r)*(1-h[2][3])*I[2][3][t];
   for(int j = 4; j <= 5; j++) {
-    I[2][j] = r*(1-h[2][j-1])*I[2][j-1][t] + (1-r)(1-h[2][j])*I[2][j][t];
+    I[2][j][t] = (r) * (1-h[2][j-1])*I[2][j-1][t] + (1-r)*(1-h[2][j])*I[2][j][t];
   }
   R[2][t+1] = R[2][t] + r*I[2][5][t]+r*I[1][5][t];
   
@@ -92,14 +98,14 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
     I[0][1][t+1] += p[i]*(1-q[i])*E[0][i][t];
   }
   I[0][2][t+1] = (1-h[0][1])*I[0][1][t];
-  I[0][3][t+1] = (1-h[0][2])*I[0][2][t] + (1-r)(1-h[0][3])*I[0][3][t];
+  I[0][3][t+1] = (1-h[0][2])*I[0][2][t] + (1-r)*(1-h[0][3])*I[0][3][t];
   for(int j = 4; j <= 5; j++) {
-    I[0][j] = r*(1-h[0][j-1])*I[0][j-1][t] + (1-r)(1-h[0][j])*I[0][j][t];
+    I[0][j][t] = r*(1-h[0][j-1])*I[0][j-1][t] + (1-r)*(1-h[0][j])*I[0][j][t];
   }
   R[0][t+1] = R[0][t] + r*I[0][5][t]+r*I[1][5][t];
   
   for(int i = 2; i <= 14; i++) {
-    E[1][t+1] = (1 - p[i - 1])*(q[i] * E[2][i - 1][t] + E[1][i - 1][t]);
+    E[1][i][t+1] = (1 - p[i - 1])*(q[i] * E[2][i - 1][t] + E[1][i - 1][t]);
   }
 
   I[1][1][t+1] = 0;
@@ -126,13 +132,38 @@ void model_updater(float S[][], float E[][][], float I[][][], float R[][][], int
  * PARAMETERS:
  * -----------
  */
-int* model_solver(int t, float l[][][], float p[], float q[], float h[][], float r) {
-  float S[3][t];
-  float E[3][14][t];
-  float I[3][5][t];
-  float R[3][t];
+void model_solver(int t, double*** l, double* p, double* q, double** h, double r, int* result) {
+  double S[3][t];
+  double E[3][14][t];
+  double I[3][5][t];
+  double R[3][t];
+
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < t; j++) {
+	S[i][j] = 0;
+    }
+  }
   
-  return {1};
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < 14; j++) {
+      for(int k = 0; k < t; k++) {
+	E[i][j][k] = 0;
+      }
+    }
+  }
+  
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < 5; j++) {
+      for(int k = 0; k < t; k++) {
+	I[i][j][k] = 0;
+      }
+    }
+  }
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < t; j++) {
+	R[i][j] = 0;
+    }
+  }  
 }
 
 /* FUNCTION: model_optimizer
@@ -140,9 +171,16 @@ int* model_solver(int t, float l[][][], float p[], float q[], float h[][], float
  * To be called in main
  * Takes in pointers to the parameters of the model, then mutates them to be values that minimize the least squares residual.
  * 
+ *
  * PARAMETERS:
  * -----------
  */
-void model_optimizer(float* R[][][], float* l[][][], float* p[], float* q[], float* h[][], float* r, int t) {
+void model_optimizer(int t, double**** R, double**** l, double** p, double** q, double*** h, double* r) {
 
+  int result[t];
+
+  for(int i = 0; i < t; i++) {
+    result[i] = 0;
+  }
+  
 }
