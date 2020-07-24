@@ -22,13 +22,14 @@
  */
 
 #include <math.h>
+#include <stdio.h>
 
 int model_updater(double** S, double*** E, double*** I, double** R, int t,
 		  double** l, double* p, double* q, double** h, double r);
 
-void model_solver(int t, double*** l, double* p, double* q, double** h, double r, int* result);
+void model_solver(int t, double** l, double* p, double* q, double** h, double r, int* result);
 
-void model_optimizer(int t, double**** R, double**** l, double** p, double** q, double*** h, double* r);
+void model_optimizer(int t, double*** l, double** p, double** q, double*** h, double* r);
  
 /* FUNCTION: main
  * --------------
@@ -41,6 +42,37 @@ void model_optimizer(int t, double**** R, double**** l, double** p, double** q, 
  * argv : char** : array of character arrays, each index holds one commandline argument
  */
 int main(int argc, char** argv){
+  int t = 100;
+  double l[3][t]; // [Group, Last day of simuation]
+  double p[14]; // [Day of exposure]
+  double q[14]; // [Day of exposure]
+  double h[3][5]; // [Group, Day of infection]
+  double r; // Chance to recover
+
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < t; j++) {
+      l[i][j] = 0;
+    }
+  }
+
+  for(int i = 0; i < 14; i++) {
+    p[i] = 0;
+  }
+  
+  for(int i = 0; i < 14; i++) {
+    q[i] = 0;
+  }
+
+  for(int i = 0; i < 3; i++) {
+    for(int j = 0; j < 5; j++) {
+      h[i][j] = 0;
+    }
+  }
+
+  r = 0;
+  
+  model_optimizer(t, &l, &p, &q, &h, &r);
+  
   return 0;
 }
 
@@ -163,7 +195,11 @@ void model_solver(int t, double*** l, double* p, double* q, double** h, double r
     for(int j = 0; j < t; j++) {
 	R[i][j] = 0;
     }
-  }  
+  }
+
+  for(int i = 0; i < t; i++) {
+    result[i] = model_updater(S, E, I, R, i, l, p, q, h, r) // Using the state variables and parameters, update the model each day
+  }
 }
 
 /* FUNCTION: model_optimizer
@@ -175,12 +211,17 @@ void model_solver(int t, double*** l, double* p, double* q, double** h, double r
  * PARAMETERS:
  * -----------
  */
-void model_optimizer(int t, double**** R, double**** l, double** p, double** q, double*** h, double* r) {
+void model_optimizer(int t, double**** l, double** p, double** q, double*** h, double* r) {
 
   int result[t];
 
   for(int i = 0; i < t; i++) {
     result[i] = 0;
   }
-  
+
+  model_updater(t, l*, p*, q*, h*, r*, result);
+
+  for(i = 0; i < t; i++) {
+    printf(result[i]);
+  }
 }
