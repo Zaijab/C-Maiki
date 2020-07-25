@@ -45,10 +45,15 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
  *
  * PARAMETERS:
  * -----------
- * argc : int : the number of commandline arguments when running the program
- * argv : char** : array of character arrays, each index holds one commandline argument
+ * argc : int : the number of commandline arguments when running the program.
+ * argv : char** : array of character arrays, each index holds one commandline argument.
+ *
+ * RETURN:
+ * -------
+ * 0 if the function runs without error.
+ * 1 if the function runs with error.
  */
-int main(int argc, char** argv) {
+int main(int argc, char* argv[]) {
   double l[3][SIMULATION_TIME] = {0}; // [Group, Last day of simuation]
   double p[14] = {0}; // [Day of exposure]
   double q[14] = {0}; // [Day of exposure]
@@ -60,6 +65,57 @@ int main(int argc, char** argv) {
   return 0;
 }
 
+/* FUNCTION: model_optimizer
+ * -------------------------
+ * To be called in main
+ * Takes in pointers to the parameters of the model, then mutates them to be values that minimize the least squares residual.
+ * 
+ *
+ * PARAMETERS:
+ * -----------
+ * l -
+ * p - 
+ * q - 
+ * h - 
+ * r - 
+ */
+void model_optimizer(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
+  
+  int result[SIMULATION_TIME] = {0};
+  
+  model_solver(l, p, q, h, r, result);
+
+  for(int i = 0; i < SIMULATION_TIME; i++) {
+    printf("Day %d: %d\n", i, result[i]);
+  }
+}
+
+/* FUNCTION: model_solver
+ * ----------------------
+ * Initializes state variables S, E, I, R, and t and takes in the parameters for the model.
+ * Will call on model_updater (t-1) times to get (t) many days of simulated data.
+ * Returns an array of integers representing the daily counts (the thing we need to match the data).
+ * model_optimizer will use this returned array to generate an error value.
+ *
+ * PARAMETERS:
+ * -----------
+ * l -
+ * p - 
+ * q - 
+ * h - 
+ * r - 
+ */
+void model_solver(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r, int result[SIMULATION_TIME]) {
+  double S[3][SIMULATION_TIME] = {0};
+  double E[3][14][SIMULATION_TIME] = {0};
+  double I[3][5][SIMULATION_TIME] = {0};
+  double R[3][SIMULATION_TIME] = {0};
+ 
+  for(int i = 0; i < SIMULATION_TIME; i++) {
+    result[i] = model_updater(S, E, I, R, i, l, p, q, h, r); // Using the state variables and parameters, update the model each day
+  }
+}
+
 /* FUNCTION: model_updater
  * -----------------------
  * Implementation of the difference equations. 
@@ -68,21 +124,21 @@ int main(int argc, char** argv) {
  *
  * PARAMETERS:
  * -----------
- * S 
- * E
- * I
- * R
- * t
- * l
- * p
- * q
- * h
- * r
+ * S[Group][Day] - Number of succeptible people in a given Group on a given Day
+ * E[Group][Stage][Day] - Number of exposed people in a given Group in a given stage on a given Day
+ * I[Group][Stage][Day] - Number of infected people in a given Group in a given stage on a given Day
+ * R[Group][Day] - Number of recoverd people in a given Group on a given Day
+ * t - The given day
+ * l -
+ * p - 
+ * q - 
+ * h - 
+ * r - 
  *
  * RETURNS:
  * --------
  * The new infected count on that day.
- * The new count is calculated by looking at the positive flux into the managed pool
+ * The new count is calculated by looking at the positive flux into the managed pool.
  */
 int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME], double I[3][5][SIMULATION_TIME], double R[3][SIMULATION_TIME], int t,
 		  double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
@@ -156,45 +212,4 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
   }
 
   return return_value;
-}
-
-/* FUNCTION: model_solver
- * ----------------------
- * Initializes state variables S, E, I, R, and t and takes in the parameters for the model.
- * Will call on model_updater (t-1) times to get (t) many days of simulated data.
- * Returns an array of integers representing the daily counts (the thing we need to match the data).
- * model_optimizer will use this returned array to generate an error value.
- *
- * PARAMETERS:
- * -----------
- */
-void model_solver(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r, int result[SIMULATION_TIME]) {
-  double S[3][SIMULATION_TIME] = {0};
-  double E[3][14][SIMULATION_TIME] = {0};
-  double I[3][5][SIMULATION_TIME] = {0};
-  double R[3][SIMULATION_TIME] = {0};
- 
-  for(int i = 0; i < SIMULATION_TIME; i++) {
-    result[i] = model_updater(S, E, I, R, i, l, p, q, h, r); // Using the state variables and parameters, update the model each day
-  }
-}
-
-/* FUNCTION: model_optimizer
- * -------------------------
- * To be called in main
- * Takes in pointers to the parameters of the model, then mutates them to be values that minimize the least squares residual.
- * 
- *
- * PARAMETERS:
- * -----------
- */
-void model_optimizer(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
-  
-  int result[SIMULATION_TIME] = {0};
-  
-  model_solver(l, p, q, h, r, result);
-
-  for(int i = 0; i < SIMULATION_TIME; i++) {
-    printf("Day %d: %d\n", i, result[i]);
-  }
 }
