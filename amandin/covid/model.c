@@ -106,19 +106,20 @@ int main(int argc, char** argv) {
  */
 int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME], double I[3][5][SIMULATION_TIME], double R[3][SIMULATION_TIME], int t,
 		  double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
+
   S[2][t+1] = exp(-l[2][t]) * S[2][t];
   E[2][1][t+1] = (1 - exp(-l[2][t])) * S[2][t];
   
-  for(int i = 2; i <= 14; i++) {
+  for(int i = 2; i < 14; i++) {
     E[2][i][t+1] = (1 - p[i-1]) * E[2][i-1][t];
   }
   
-  for(int i = 1; i <= 14; i++) {
+  for(int i = 1; i < 14; i++) {
     I[2][1][t+1] += p[i]*(1-q[i])*E[2][i][t];
   }
   I[2][2][t+1] = (1-h[2][1])*I[2][1][t];
   I[2][3][t+1] = (1-h[2][2])*I[2][2][t] + (1-r)*(1-h[2][3])*I[2][3][t];
-  for(int j = 4; j <= 5; j++) {
+  for(int j = 4; j < 5; j++) {
     I[2][j][t] = (r) * (1-h[2][j-1])*I[2][j-1][t] + (1-r)*(1-h[2][j])*I[2][j][t];
   }
   R[2][t+1] = R[2][t] + r*I[2][5][t]+r*I[1][5][t];
@@ -126,11 +127,11 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
   S[0][t+1] = exp(-l[0][t]) * S[0][t];
   E[0][1][t+1] = (1 - exp(-l[0][t])) * S[0][t];
   
-  for(int i = 2; i <= 14; i++) {
+  for(int i = 2; i < 14; i++) {
     E[0][i][t+1] = (1 - p[i-1]) * E[0][i-1][t];
   }
   
-  for(int i = 1; i <= 14; i++) {
+  for(int i = 1; i < 14; i++) {
     I[0][1][t+1] += p[i]*(1-q[i])*E[0][i][t];
   }
   I[0][2][t+1] = (1-h[0][1])*I[0][1][t];
@@ -140,22 +141,41 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
   }
   R[0][t+1] = R[0][t] + r*I[0][5][t]+r*I[1][5][t];
   
-  for(int i = 2; i <= 14; i++) {
+  for(int i = 2; i < 14; i++) {
     E[1][i][t+1] = (1 - p[i - 1])*(q[i] * E[2][i - 1][t] + E[1][i - 1][t]);
   }
 
   I[1][1][t+1] = 0;
-  for(int i = 1; i <= 14; i++) {
+  for(int i = 1; i < 14; i++) {
     I[1][1][t+1] += p[i]*(q[i]*E[2][i][t] + E[1][i][t]);
   }			  
   I[1][2][t+1] = h[2][1] * I[2][1][t] + h[0][1] * I[0][1][t] + I[1][1][t];
-  I[1][3][t + 1] = r * (h[2][2] * I[2][2][t] + h[0][2] * I[0][2][t] + I[1][2][t])
+  I[1][3][t + 1] = (h[2][2] * I[2][2][t] + h[0][2] * I[0][2][t] + I[1][2][t])
     + (1 - r)*(h[2][3] * I[2][3][t] + h[0][3] * I[0][3][t] + I[1][1][t]);
   
-  for(int j = 4; j <= 5; j++) {
+  for(int j = 4; j < 5; j++) {
     I[1][j][t + 1] = r * (h[2][j - 1] * I[2][j - 1][t] + h[0][j - 1] * I[0][j - 1][t] + I[1][j - 1][t])
       + (1 - r)*(h[2][j] * I[2][j][t] + h[0][j] * I[0][j][t] + I[1][j][t]);
   }
+
+  int return_value = 0;
+  for(int i = 2; i < 14; i++) {
+    return_value += (1 - p[i - 1])*(q[i] * E[2][i - 1][t]);
+  }
+
+  for(int i = 1; i < 14; i++) {
+    return_value += p[i]*(q[i]*E[2][i][t]);
+  }			  
+  return_value += h[2][1] * I[2][1][t] + h[0][1] * I[0][1][t];
+  return_value += (h[2][2] * I[2][2][t] + h[0][2] * I[0][2][t])
+    + (1 - r)*(h[2][3] * I[2][3][t] + h[0][3] * I[0][3][t] + I[1][1][t]);
+  
+  for(int j = 4; j < 5; j++) {
+    return_value += r * (h[2][j - 1] * I[2][j - 1][t] + h[0][j - 1] * I[0][j - 1][t])
+      + (1 - r)*(h[2][j] * I[2][j][t] + h[0][j] * I[0][j][t]);
+  }
+
+  return return_value;
 }
 
 /* FUNCTION: model_solver
@@ -227,6 +247,6 @@ void model_optimizer(double l[3][SIMULATION_TIME], double p[14], double q[14], d
   model_solver(l, p, q, h, r, result);
 
   for(int i = 0; i < SIMULATION_TIME; i++) {
-    printf("%d", result[i]);
+    printf("Day %d: %d\n", i, result[i]);
   }
 }
