@@ -49,31 +49,11 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
  * argv : char** : array of character arrays, each index holds one commandline argument
  */
 int main(int argc, char** argv) {
-  double l[3][SIMULATION_TIME]; // [Group, Last day of simuation]
-  double p[14]; // [Day of exposure]
-  double q[14]; // [Day of exposure]
-  double h[3][5]; // [Group, Day of infection]
-  double r; // Chance to recover
-  
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < SIMULATION_TIME; j++) {
-      l[i][j] = 0;
-    }
-  }
-  
-  for(int i = 0; i < 14; i++) {
-    p[i] = 0;
-  }
-  
-  for(int i = 0; i < 14; i++) {
-    q[i] = 0;
-  }
-  
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < SIMULATION_TIME; j++) {
-      l[i][j] = 0;
-    }
-  }
+  double l[3][SIMULATION_TIME] = {0}; // [Group, Last day of simuation]
+  double p[14] = {0}; // [Day of exposure]
+  double q[14] = {0}; // [Day of exposure]
+  double h[3][5] = {0}; // [Group, Day of infection]
+  double r = 0; // Chance to recover
   
   model_optimizer(l, p, q, h, r);
   
@@ -189,39 +169,11 @@ int model_updater(double S[3][SIMULATION_TIME], double E[3][14][SIMULATION_TIME]
  * -----------
  */
 void model_solver(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r, int result[SIMULATION_TIME]) {
-  double S[3][SIMULATION_TIME];
-  double E[3][14][SIMULATION_TIME];
-  double I[3][5][SIMULATION_TIME];
-  double R[3][SIMULATION_TIME];
-
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < SIMULATION_TIME; j++) {
-      S[i][j] = 0;
-    }
-  }
-  
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < 14; j++) {
-      for(int k = 0; k < SIMULATION_TIME; k++) {
-	E[i][j][k] = 0;
-      }
-    }
-  }
-  
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < 5; j++) {
-      for(int k = 0; k < SIMULATION_TIME; k++) {
-	I[i][j][k] = 0;
-      }
-    }
-  }
-  
-  for(int i = 0; i < 3; i++) {
-    for(int j = 0; j < SIMULATION_TIME; j++) {
-      R[i][j] = 0;
-    }
-  }
-  
+  double S[3][SIMULATION_TIME] = {0};
+  double E[3][14][SIMULATION_TIME] = {0};
+  double I[3][5][SIMULATION_TIME] = {0};
+  double R[3][SIMULATION_TIME] = {0};
+ 
   for(int i = 0; i < SIMULATION_TIME; i++) {
     result[i] = model_updater(S, E, I, R, i, l, p, q, h, r); // Using the state variables and parameters, update the model each day
   }
@@ -238,11 +190,7 @@ void model_solver(double l[3][SIMULATION_TIME], double p[14], double q[14], doub
  */
 void model_optimizer(double l[3][SIMULATION_TIME], double p[14], double q[14], double h[3][5], double r) {
   
-  int result[SIMULATION_TIME];
-  
-  for(int i = 0; i < SIMULATION_TIME; i++) {
-    result[i] = 0;
-  }
+  int result[SIMULATION_TIME] = {0};
   
   model_solver(l, p, q, h, r, result);
 
