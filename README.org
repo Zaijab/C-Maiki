@@ -43,13 +43,10 @@ otu_names = ['Otu00001', 'Otu00002, ...]
 **** taxonomies (Dictionary)
 **** taxonomic_tree (Skbio Tree)
 *** Methods
-* Notes
-
-
-473 31475
-Total= 14887675 Zero 14751791 Sparcity= 0.990872718540672
-
-0.9581190624115332
-0.6081897838562583
-0.9588491374180745
-0.8441730254649427
+**** CSV -> Pandas Table
+**** Table -> Distance Matrix
+**** Distance Matrix -> 
+** Covid
+** Environmental
+** Graphs
+** Manifolds

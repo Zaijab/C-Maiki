@@ -48,3 +48,19 @@ rufus willet assoc chair ask about 4+1
 
 * Mosquito in Positive Cluster
 105525,Miseq04_16S,ACACTCATTACT,3054,bacterial16S,7,G,7,G07,515f,806r,515rcbc654,WMEA_03054_An_9,Mosquito,Supertransect,28.0,9,STFalls9,STFalls,20190619.0,Mosquito,Terrestrial,Animal,Carnivore,Transect,Aedes albopictus F non-blooded,21.63056597,-158.044273,,Collected and identified by Medeiros Lab,
+
+* Notes
+
+
+473 31475
+Total= 14887675 Zero 14751791 Sparcity= 0.990872718540672
+
+0.9581190624115332
+0.6081897838562583
+0.9588491374180745
+0.8441730254649427
+
+* Using New Data
+Change files to be the new dataset
+Use the Pandas.read_csv function for better code
+Drop samples without "trophic" metadata in both metadata and abundance_tables.

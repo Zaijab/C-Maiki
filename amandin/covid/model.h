@@ -6,7 +6,7 @@
  */
 
 /* Length of time to run the simulation */
-#define SIMULATION_TIME 10
+#define SIMULATION_TIME 20
 
 /* Partitioning the groups of the model */
 #define HEALTHCARE_UNMANAGED 0
@@ -23,7 +23,7 @@
 #define NUM_BETAS 3
 
 /* Change and recompile to have debug print statements */
-#define DEBUG 0
+#define DEBUG 1
 
 /* Allocate memory for the models state variables and parameters */
 struct model {
@@ -80,5 +80,4 @@ struct model {
 
 /* Implement the difference equations in this function */
 void model_updater(struct model *m);
-void sums(struct model *m);
 #endif
