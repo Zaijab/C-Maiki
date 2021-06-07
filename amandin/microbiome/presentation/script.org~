@@ -1,0 +1,21 @@
+* Importance of the Microbiome
+* The Data
+C-Maiki data collectors go out into the world with sampling devices (I imagine swabs) and take a sample at different points along Waimea Valley. Every sample will have a number of different DNA sequence fragments, and from that, the researchers are able to transform the fragments into a count of the number and type of microorganisms in the sample. The method will group DNA clusters by similarity resulting in an Organismal Taxonomix Unit or OTU. 
+
+In the end, we are given the two following pieces of information,
+An abundance table, a table indexed by the sample ID and OTUs. So every row shows the OTUs in the given sample and every column will show how many of a given OTU appears in each sample.
+
+The metadata, a file containing information about each sample.
+
+Note, that because of the method of DNA clustering and the metadata table, we know much more about the samples the researchers took versus the OTU's. Hence, we shift our attention to the samples.
+
+The way we think about the sample is that it is a type of measure of the microbiome at each point where it is taken.
+
+Thus, with the collection of samples we can then try to understand how the samples vary throughout Waimea Valley.
+* Methodology
+Dr. Chyba and I come from a formal mathematical background over a formal biological background. However this allows us to have a unique advantage when it comes to the analysis. The standard approach to biological data is to look at measures of diversity 
+
+
+MDS - Preserves high dimensional distances
+
+SE - Uses the graph Laplacian, preserve local distances

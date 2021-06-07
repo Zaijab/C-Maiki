@@ -1,0 +1,82 @@
+#+TITLE: Microbiome Analysis
+#+STARTUP: overview
+
+* Program Initialization
+
+** Import Modules
+#+BEGIN_SRC python
+  from scipy.spatial.distance import pdist, squareform
+  from scipy.sparse.linalg import eigs, eigsh
+  from scipy import stats
+  import numpy as np
+  import pandas as pd
+  import matplotlib.pyplot as plt
+  from mpl_toolkits.mplot3d import Axes3D
+  from matplotlib.lines import Line2D
+  plt.rcParams['figure.facecolor'] = 'white'
+  from operator import methodcaller, attrgetter
+#+END_SRC
+
+
+** Import Data
+#+BEGIN_SRC python
+  data_path = "/home/zjabbar/code/C-Maiki/amandin/microbiome/data"
+  figure_path = "/home/zjabbar/code/C-Maiki/amandin/microbiome/plots"
+  abundance_table_path = f"{data_path}/mm_16s_hiseqs_abundance_table.csv"
+  metadata_path = f"{data_path}/mm_16s_hiseqs_metadata_table.csv"
+  
+  # Abundance Table
+  abundance_table = pd.read_csv(abundance_table_path, index_col=0)
+  abundance_table["Abundance"] = abundance_table.sum(axis=1)
+  abundance_table["Presence"] = abundance_table.drop("Abundance", axis=1).where(abundance_table == 0, 1).sum(axis=1)
+  
+  # Metadata
+  metadata = pd.read_csv(metadata_path, index_col=0)
+  metadata = metadata.loc[metadata["trophic"].notna()]
+  abundance_table = abundance_table.filter(items=list(metadata["sequencing_id"]), axis=0)
+  metadata = metadata[metadata["sequencing_id"].isin(abundance_table.index)]
+#+END_SRC
+
+
+** Field Functions
+Define functions which act on grabbing / manipulating data on samples matching a field.
+This is so we can define functions which act on entire abundance_tables, then call it iteratively using this method.
+#+BEGIN_SRC python
+  def filtration(key, filterer):
+      filtered_metadata = metadata.loc[metadata[key] == filterer]
+      filtered_abundance = abundance_table.filter(
+          items=list(filtered_metadata["sequencing_id"]), axis=0)
+      filtered_metadata = filtered_metadata[filtered_metadata["sequencing_id"].isin(filtered_abundance.index)]
+      return filtered_abundance, filtered_metadata
+
+  def map_element_in_field(field, function):
+      return {element : attrgetter(function)(filtration(field, element)[0]) for element in metadata[field].unique().tolist()}
+#+END_SRC
+
+
+* Abundance Table and Metadata Statistics
+
+** Cardinality
+#+BEGIN_SRC python
+  print(map_element_in_field("host", "shape"))
+#+END_SRC
+
+
+** Sparcity
+
+
+** Normality
+
+
+** Plotting
+
+
+* Spectral Clustering
+
+** Bruh
+#+BEGIN_SRC python
+  print(map_element_in_field("host", "shape"))
+#+END_SRC
+#+BEGIN_SRC python
+  print(boi)
+#+END_SRC
